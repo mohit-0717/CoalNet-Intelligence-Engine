@@ -247,7 +247,7 @@ CoalNet Zero supports:
 
 ---
 
-## 👤 Author
+## 👤 Authors
 
 **Tejas Mahamuni**
 
@@ -255,6 +255,10 @@ CoalNet Zero supports:
 [![Instagram](https://img.shields.io/badge/Instagram-smudge__7__-E4405F?style=flat&logo=instagram&logoColor=white)](https://www.instagram.com/smudge_7_)
 [![Twitter](https://img.shields.io/badge/X-iTejas__07-000000?style=flat&logo=x)](https://x.com/iTejas_07)
 [![Email](https://img.shields.io/badge/Email-tejasmahamuni16@gmail.com-D14836?style=flat&logo=gmail&logoColor=white)](mailto:tejasmahamuni16@gmail.com)
+
+**Mohit**
+
+[![GitHub](https://img.shields.io/badge/GitHub-mohit--0717-181717?style=flat&logo=github)](https://github.com/mohit-0717)
 
 ---
 

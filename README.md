@@ -256,9 +256,10 @@ CoalNet Zero supports:
 [![Twitter](https://img.shields.io/badge/X-iTejas__07-000000?style=flat&logo=x)](https://x.com/iTejas_07)
 [![Email](https://img.shields.io/badge/Email-tejasmahamuni16@gmail.com-D14836?style=flat&logo=gmail&logoColor=white)](mailto:tejasmahamuni16@gmail.com)
 
-**Mohit**
+**Mohit Bankhele**
 
 [![GitHub](https://img.shields.io/badge/GitHub-mohit--0717-181717?style=flat&logo=github)](https://github.com/mohit-0717)
+[![Email](https://img.shields.io/badge/Email-mohitbankhele0717@gmail.com-D14836?style=flat&logo=gmail&logoColor=white)](mailto:tejasmahamuni16@gmail.com)
 
 ---
 

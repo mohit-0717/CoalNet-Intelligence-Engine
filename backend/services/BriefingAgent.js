@@ -336,7 +336,7 @@ ${waStatusEmoji} ${jsonData.report_metadata.hero_headline}
       return;
     }
 
-    const logoPath = path.join(__dirname, '../../frontend/src/assets/CoalNet_Zero_LOGO.png');
+    const logoPath = path.join(__dirname, '../assets/CoalNet_Zero_LOGO.png');
 
     await transporter.sendMail({
       from: EMAIL_USER,

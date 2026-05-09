@@ -12,9 +12,8 @@ const EMAIL_PASS = process.env.EMAIL_PASS;
 
 const transporter = nodemailer.createTransport({
   host: 'smtp.gmail.com',
-  port: 465,
-  secure: true,
-  family: 4, // Force IPv4 to fix Render's IPv6 ENETUNREACH error
+  port: 587,
+  secure: false, // true for 465, false for other ports (uses STARTTLS)
   auth: {
     user: EMAIL_USER,
     pass: EMAIL_PASS,

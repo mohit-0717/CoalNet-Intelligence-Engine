@@ -326,7 +326,12 @@ ${waStatusEmoji} ${jsonData.report_metadata.hero_headline}
     console.log('🤖 [BriefingAgent] Sending WhatsApp summary...');
     try {
       const TARGET_WHATSAPP = process.env.MY_PHONE_NUMBER || 'whatsapp:+919309962509';
-      await sendWhatsAppBriefing(whatsappText, TARGET_WHATSAPP);
+      const numbers = TARGET_WHATSAPP.split(',');
+      for (const num of numbers) {
+        if (num.trim()) {
+          await sendWhatsAppBriefing(whatsappText, num.trim());
+        }
+      }
     } catch (waErr) {
       console.error('❌ [WhatsApp] Failed to send summary.', waErr.message);
     }

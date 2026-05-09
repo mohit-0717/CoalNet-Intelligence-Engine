@@ -79,9 +79,10 @@ const Navbar = () => {
 
   const handleTriggerBriefing = async () => {
     try {
-      toast.info("Triggering new Daily Briefing...");
+      toast.info("Generating AI Briefing... (Takes ~15 seconds)");
       await api.triggerBriefing();
-      setTimeout(fetchBriefings, 5000); // refresh after 5s
+      // Increase timeout to 20 seconds because LLM generation + email + WhatsApp is slow
+      setTimeout(fetchBriefings, 20000); 
     } catch (e) {
       toast.error("Failed to trigger briefing");
     }

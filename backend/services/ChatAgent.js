@@ -175,7 +175,7 @@ RULES:
 - ALWAYS give actionable steps
 - ALWAYS relate to coal mining context
 - If unsure → say "Based on available data"
-- NEVER use markdown tables (| Column | Column |). The frontend does not support rendering tables. ALWAYS use bullet points instead.
+- Use markdown tables (| Column | Column |) when asked to compare data.
 
 -------------------------------------
 
@@ -187,7 +187,7 @@ You are a Carbon Management Assistant that helps mines:
 - move toward net-zero
 
 You must sound intelligent, confident, and practical.
-Use beautiful markdown formatting (bold, italics, lists, emojis) to make your response highly readable.
+Use beautiful markdown formatting (bold, italics, lists, emojis, and tables) to make your response highly readable.
 `;
 
 const Mine = require('../models/Mine');
@@ -201,21 +201,13 @@ const handleChat = async (message, contextData, history = []) => {
       const mines = await Mine.find({});
       if (mines.length > 0) {
         dbContext += `Total Active Mines: ${mines.length}\n`;
-        // Pick top 5 mines to keep context small, or just list names
-        const names = mines.map(m => m.name).join(", ");
-        dbContext += `Available Mines: ${names}\n`;
         
-        // If the user's message mentions a specific mine, fetch its latest data!
-        const mentionedMine = mines.find(m => message.toLowerCase().includes(m.name.toLowerCase()));
-        if (mentionedMine) {
-          const MineEmission = getMineEmissionModel(mentionedMine.name);
+        dbContext += `\n[LATEST DATA FOR ALL MINES]:\n`;
+        for (const m of mines) {
+          const MineEmission = getMineEmissionModel(m.name);
           const latest = await MineEmission.findOne().sort({ date: -1 });
           if (latest) {
-            dbContext += `\n[LATEST DATA FOR ${mentionedMine.name}]:\n`;
-            dbContext += `- Total CO2e: ${latest.total_carbon_emission} kg\n`;
-            dbContext += `- Methane: ${latest.methane_emissions_co2e} kg\n`;
-            dbContext += `- Electricity: ${latest.electricity_used} kWh\n`;
-            dbContext += `- Fuel: ${latest.fuel_used} L\n`;
+            dbContext += `- ${m.name} (${m.state}): Total Emissions: ${latest.total_carbon_emission}kg, Methane: ${latest.methane_emissions_co2e}kg, Electricity: ${latest.electricity_used}kWh, Fuel: ${latest.fuel_used}L, Renewables: ${latest.renewable_energy_used}kWh\n`;
           }
         }
       }

@@ -175,7 +175,7 @@ export const api = {
 
   // Daily Briefings
   getBriefings: async () => {
-    return await api.get('ai/briefings');
+    return await api.get(`ai/briefings?t=${new Date().getTime()}`);
   },
 
   triggerBriefing: async () => {

@@ -1,5 +1,5 @@
 const cron = require('node-cron');
-const nodemailer = require('nodemailer');
+const { Resend } = require('resend');
 const { callLLM } = require('./llmService');
 const Mine = require('../models/Mine');
 const { getMineEmissionModel } = require('../models/Emission');
@@ -7,19 +7,7 @@ const Briefing = require('../models/Briefing');
 const { sendWhatsAppBriefing } = require('./whatsappService');
 
 const TARGET_EMAIL = process.env.TARGET_EMAIL;
-const EMAIL_USER = process.env.EMAIL_USER;
-const EMAIL_PASS = process.env.EMAIL_PASS;
-
-const transporter = nodemailer.createTransport({
-  host: 'smtp.gmail.com',
-  port: 587,
-  secure: false, // true for 465, false for other ports (uses STARTTLS)
-  family: 4, // MUST force IPv4 on Render
-  auth: {
-    user: EMAIL_USER,
-    pass: EMAIL_PASS,
-  },
-});
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 const path = require('path');
 
@@ -123,7 +111,7 @@ const generateAppleEmailHTML = (data) => {
 <body>
   <div class="container">
     <div class="header">
-      <img src="cid:logo" alt="CoalNet Zero" class="logo" />
+      <img src="https://raw.githubusercontent.com/mohit-0717/CoalNet-Intelligence-Engine/main/frontend/src/assets/CoalNet_Zero_LOGO.png" alt="CoalNet Zero" class="logo" />
       <div><span class="date-badge">${formattedDate}</span></div>
     </div>
     
@@ -344,21 +332,23 @@ ${waStatusEmoji} ${jsonData.report_metadata.hero_headline}
       return;
     }
 
-    const logoPath = path.join(__dirname, '../assets/CoalNet_Zero_LOGO.png');
+    // Free tier of Resend requires 'onboarding@resend.dev' as sender.
+    // We only send to the first email in the array because the free tier limits recipients to verified domains/addresses.
+    const primaryTarget = TARGET_EMAIL.split(',')[0].trim();
 
-    await transporter.sendMail({
-      from: EMAIL_USER,
-      to: TARGET_EMAIL,
+    const info = await resend.emails.send({
+      from: 'onboarding@resend.dev',
+      to: primaryTarget,
       subject: `CoalNet AI: ${jsonData.report_metadata.hero_headline}`,
-      html: htmlEmail,
-      attachments: [{
-        filename: 'logo.png',
-        path: logoPath,
-        cid: 'logo' // matches cid:logo in the html template
-      }]
+      html: htmlEmail
     });
 
-    console.log(`✅ [BriefingAgent] Apple-Style Briefing sent to ${TARGET_EMAIL}`);
+    if (info.error) {
+      console.error('❌ [BriefingAgent] Resend Error:', info.error);
+    } else {
+      console.log(`✅ [BriefingAgent] Apple-Style Briefing sent via Resend to ${primaryTarget}`);
+      console.log(`✅ [BriefingAgent] Message ID: ${info.data.id}`);
+    }
 
   } catch (error) {
     console.error('❌ [BriefingAgent] Failed to execute daily run:', error.message);

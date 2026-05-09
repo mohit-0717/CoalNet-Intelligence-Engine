@@ -230,9 +230,18 @@ router.get('/dashboard', async (req, res) => {
       }, {});
 
       const allMonths = [];
-      let current = new Date(today.getFullYear(), today.getMonth() - 6, 1);
+      const sortedMonths = Object.keys(monthlyEmissions).sort();
+      let endMonthDate = new Date(today.getFullYear(), today.getMonth(), 1);
+      if (sortedMonths.length > 0) {
+        const lastMonthStr = sortedMonths[sortedMonths.length - 1];
+        endMonthDate = new Date(lastMonthStr + '-01');
+      }
+      let current = new Date(endMonthDate.getFullYear(), endMonthDate.getMonth() - 6, 1);
       for (let i = 0; i < 7; i++) {
-        allMonths.push(current.toISOString().slice(0, 7));
+        // Adjust for timezone differences when formatting to ISO string
+        const year = current.getFullYear();
+        const month = String(current.getMonth() + 1).padStart(2, '0');
+        allMonths.push(`${year}-${month}`);
         current.setMonth(current.getMonth() + 1);
       }
 

@@ -4,6 +4,7 @@ const axios = require('axios');
 const Mine = require('../models/Mine');
 const Forecast = require('../models/Forecast');
 const { getMineEmissionModel } = require('../models/Emission');
+const { generateFallbackForecast } = require('../services/FallbackForecastService');
 
 const ML_SERVICE_URL = process.env.ML_SERVICE_URL || 'http://localhost:5001';
 const FORECAST_TTL_HOURS = 24;
@@ -82,20 +83,48 @@ router.post('/:mineId', async (req, res) => {
 
     console.log(`🧠 Calling ML service for ${mine.name}: ${serializedEmissions.length} records, horizon=${horizon}`);
 
-    // Call Python ML service
-    const mlResponse = await axios.post(`${ML_SERVICE_URL}/api/forecast`, {
-      emissions: serializedEmissions,
-      horizon,
-    }, {
-      timeout: 120000, // 120 second timeout for ML processing (ARIMA fitting can be slow)
-      headers: { 'Content-Type': 'application/json' },
-    });
+    let forecastPayload;
+    let forecastSource = 'generated';
 
-    if (!mlResponse.data.success) {
-      return res.status(500).json({ error: mlResponse.data.error || 'ML service returned an error.' });
+    try {
+      // Call Python ML service
+      const mlResponse = await axios.post(`${ML_SERVICE_URL}/api/forecast`, {
+        emissions: serializedEmissions,
+        horizon,
+      }, {
+        timeout: 120000, // 120 second timeout for ML processing (ARIMA fitting can be slow)
+        headers: { 'Content-Type': 'application/json' },
+      });
+
+      if (!mlResponse.data.success) {
+        throw new Error(mlResponse.data.error || 'ML service returned an error.');
+      }
+
+      forecastPayload = mlResponse.data;
+    } catch (mlErr) {
+      const status = mlErr.response?.status;
+      const code = mlErr.code;
+      const shouldFallback = status >= 500 || [
+        'ECONNREFUSED',
+        'ECONNABORTED',
+        'ECONNRESET',
+        'ETIMEDOUT',
+        'ENOTFOUND',
+        'EAI_AGAIN',
+      ].includes(code);
+
+      if (!shouldFallback) {
+        throw mlErr;
+      }
+
+      console.warn(
+        `⚠️ ML service unavailable (${status || code || mlErr.message}). Using backend fallback forecast.`
+      );
+      forecastPayload = generateFallbackForecast(serializedEmissions, horizon);
+      forecastSource = 'fallback';
     }
 
-    const { forecast_data, model_accuracy, model_params, data_points_used } = mlResponse.data;
+    const { forecast_data, model_accuracy, model_params, data_points_used } = forecastPayload;
 
     // Cache the result
     const expiresAt = new Date();
@@ -116,7 +145,7 @@ router.post('/:mineId', async (req, res) => {
     console.log(`💾 Forecast cached for ${mine.name} (expires: ${expiresAt.toISOString()})`);
 
     res.json({
-      source: 'generated',
+      source: forecastSource,
       forecast_data,
       model_accuracy,
       model_params,

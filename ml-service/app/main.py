@@ -40,8 +40,10 @@ def create_app() -> Flask:
     return app
 
 
+app = create_app()
+
+
 if __name__ == "__main__":
     port = int(os.getenv("PORT") or os.getenv("FLASK_PORT", 5001))
-    app = create_app()
     logger.info(f"Starting ML service on port {port}")
     app.run(host="0.0.0.0", port=port, debug=os.getenv("FLASK_ENV") == "development")

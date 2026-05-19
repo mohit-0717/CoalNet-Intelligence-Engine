@@ -356,12 +356,12 @@ ${waStatusEmoji} ${jsonData.report_metadata.hero_headline}
 };
 
 const initCron = () => {
-  // Run at 09:00 AM IST daily
-  cron.schedule('0 9 * * *', generateAndSendBriefing, {
+  // Run at 11:00 AM IST daily (for testing)
+  cron.schedule('0 11 * * *', generateAndSendBriefing, {
     scheduled: true,
     timezone: "Asia/Kolkata"
   });
-  console.log('⏰ [BriefingAgent] Cron job initialized for 09:00 AM IST daily.');
+  console.log('⏰ [BriefingAgent] Cron job initialized for 11:00 AM IST daily.');
 };
 
 module.exports = {

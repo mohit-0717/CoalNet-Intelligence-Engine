@@ -230,18 +230,11 @@ const generateAndSendBriefing = async () => {
     aggregatedData.sort((a, b) => b.total_carbon_emission - a.total_carbon_emission);
     const topMines = aggregatedData.slice(0, 5);
 
-    // Pick a random mine from the top 5 to focus on for variety!
-    const focusMine = topMines[Math.floor(Math.random() * topMines.length)];
-
     const prompt = `
 Analyze yesterday's mine data:
 
 Network Total: ${totalEmissions.toFixed(2)} kg CO2e
 ${topMines.map(m => `${m.mine} (${m.state}): ${m.total_carbon_emission.toFixed(2)} kg (Fuel: ${m.fuel_emission.toFixed(2)}, Methane: ${m.methane_emission.toFixed(2)})`).join('\n')}
-
-IMPORTANT INSTRUCTION FOR TODAY'S BRIEFING:
-Instead of always focusing on the highest overall emitter, I want you to specifically focus your "Hero Headline" and "Agent Deep Dive" analysis on THIS specific mine today: **${focusMine.mine}**.
-Act as if ${focusMine.mine} showed a notable variance, anomaly, or operational event yesterday that requires the executive's attention.
 
 Generate the JSON for the Apple-style briefing.
 `;

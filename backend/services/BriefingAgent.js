@@ -356,12 +356,9 @@ ${waStatusEmoji} ${jsonData.report_metadata.hero_headline}
 };
 
 const initCron = () => {
-  // Run at 09:00 AM IST daily
-  cron.schedule('0 9 * * *', generateAndSendBriefing, {
-    scheduled: true,
-    timezone: "Asia/Kolkata"
-  });
-  console.log('⏰ [BriefingAgent] Cron job initialized for 09:00 AM IST daily.');
+  // node-cron has been disabled because it is unreliable on Render's free tier (server sleep).
+  // The briefing is now exclusively triggered by an external cron-job.org POST request to /api/ai/trigger-briefing.
+  console.log('⏰ [BriefingAgent] Waiting for external trigger via /api/ai/trigger-briefing...');
 };
 
 module.exports = {

@@ -245,17 +245,56 @@ router.get('/dashboard', async (req, res) => {
         current.setMonth(current.getMonth() + 1);
       }
 
-      periodEmissions = allMonths.map(month => ({
-        period: month,
-        emissions: monthlyEmissions[month]?.emissions || 0,
-        methane: monthlyEmissions[month]?.methane || 0,
-        methane_co2e: monthlyEmissions[month]?.methane_co2e || 0,
-        fuel_emission: monthlyEmissions[month]?.fuel_emission || 0,
-        electricity_emission: monthlyEmissions[month]?.electricity_emission || 0,
-        explosives_emission: monthlyEmissions[month]?.explosives_emission || 0,
-        transport_emission: monthlyEmissions[month]?.transport_emission || 0,
-        target: monthlyEmissions[month]?.target || 0
-      }));
+      periodEmissions = allMonths.map(month => {
+        let emissions = monthlyEmissions[month]?.emissions || 0;
+        let methane = monthlyEmissions[month]?.methane || 0;
+        let methane_co2e = monthlyEmissions[month]?.methane_co2e || 0;
+        let fuel_emission = monthlyEmissions[month]?.fuel_emission || 0;
+        let electricity_emission = monthlyEmissions[month]?.electricity_emission || 0;
+        let explosives_emission = monthlyEmissions[month]?.explosives_emission || 0;
+        let transport_emission = monthlyEmissions[month]?.transport_emission || 0;
+        let target = monthlyEmissions[month]?.target || 0;
+
+        // Current Month Extrapolation / Projection Logic
+        const [mYear, mMonth] = month.split('-');
+        if (parseInt(mYear) === today.getFullYear() && parseInt(mMonth) === today.getMonth() + 1) {
+          const currentDay = today.getDate();
+          const daysInMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0).getDate();
+          
+          if (emissions > 0 && currentDay < daysInMonth) {
+            // Extrapolate partial month data to represent a full month
+            const multiplier = daysInMonth / currentDay;
+            emissions *= multiplier;
+            methane *= multiplier;
+            methane_co2e *= multiplier;
+            fuel_emission *= multiplier;
+            electricity_emission *= multiplier;
+            explosives_emission *= multiplier;
+            transport_emission *= multiplier;
+          }
+        }
+
+        return {
+          period: month,
+          emissions,
+          methane,
+          methane_co2e,
+          fuel_emission,
+          electricity_emission,
+          explosives_emission,
+          transport_emission,
+          target
+        };
+      });
+
+      // Remove the current month from the graph entirely if it has absolutely zero data yet
+      if (periodEmissions.length > 0) {
+        const lastMonth = periodEmissions[periodEmissions.length - 1];
+        const [lYear, lMonth] = lastMonth.period.split('-');
+        if (parseInt(lYear) === today.getFullYear() && parseInt(lMonth) === today.getMonth() + 1 && lastMonth.emissions === 0) {
+          periodEmissions.pop();
+        }
+      }
     }
 
     // Recent activities

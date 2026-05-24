@@ -139,8 +139,9 @@ const CoalMinesMap = () => {
 
             <TooltipProvider>
               <TransformWrapper 
-                initialScale={1} 
+                initialScale={1.5} 
                 minScale={1} 
+                centerOnInit={true}  
                 maxScale={50} 
                 wheel={{ step: 0.2 }}
                 onTransformed={(ref) => {
@@ -177,7 +178,7 @@ const CoalMinesMap = () => {
                               style={{ 
                                 left: `${mine.x}%`, 
                                 top: `${mine.y}%`,
-                                transform: "translate(-50%, -50%) scale(calc(1 / var(--map-zoom, 1)))" 
+                                transform: "translate(-50%, -50%) scale(calc(1 / var(--map-zoom, 1.5)))" 
                               }}
                             >
                               <motion.div

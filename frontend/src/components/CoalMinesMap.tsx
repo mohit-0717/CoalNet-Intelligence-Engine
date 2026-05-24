@@ -139,7 +139,11 @@ const CoalMinesMap = () => {
 
             <TooltipProvider>
               <TransformWrapper initialScale={1} minScale={1} maxScale={8} wheel={{ step: 0.1 }}>
-                {({ zoomIn, zoomOut, resetTransform }) => (
+                {({ zoomIn, zoomOut, resetTransform, state }) => {
+                  const currentScale = state?.scale || 1;
+                  const invScale = 1 / currentScale;
+                  
+                  return (
                   <div className="relative w-full h-full flex items-center justify-center">
                     {/* Zoom Controls */}
                     <div className="absolute top-0 right-0 z-50 flex gap-2 glass-effect p-1.5 rounded-lg border border-white/10">
@@ -165,8 +169,10 @@ const CoalMinesMap = () => {
                             <motion.div
                               className="absolute w-3 h-3 cursor-pointer z-20 group"
                               style={{ left: `${mine.x}%`, top: `${mine.y}%` }}
-                              initial={{ x: "-50%", y: "-50%" }}
-                              whileHover={{ scale: 1.5, x: "-50%", y: "-50%" }}
+                              initial={{ x: "-50%", y: "-50%", scale: invScale }}
+                              animate={{ scale: invScale }}
+                              whileHover={{ scale: 1.5 * invScale, x: "-50%", y: "-50%" }}
+                              transition={{ duration: 0.1 }}
                               onMouseEnter={() => setHoveredMine(mine)}
                               onMouseLeave={() => setHoveredMine(null)}
                             >
@@ -192,7 +198,8 @@ const CoalMinesMap = () => {
                       ))}
                     </TransformComponent>
                   </div>
-                )}
+                  );
+                }}
               </TransformWrapper>
             </TooltipProvider>
 

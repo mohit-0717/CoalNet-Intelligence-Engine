@@ -356,17 +356,17 @@ ${waStatusEmoji} ${jsonData.report_metadata.hero_headline}
 };
 
 const initCron = () => {
-  // Run every day at 09:00 AM IST
-  // '0 9 * * *' = 9:00 AM
-  cron.schedule('0 9 * * *', async () => {
-    console.log('⏰ [Cron] Triggering Daily 9 AM Executive Briefing...');
+  // Run every day at 07:00 PM IST for testing
+  // '0 19 * * *' = 7:00 PM
+  cron.schedule('0 19 * * *', async () => {
+    console.log('⏰ [Cron] Triggering Daily 7 PM Executive Briefing (Testing)...');
     await generateAndSendBriefing();
   }, {
     scheduled: true,
     timezone: "Asia/Kolkata"
   });
   
-  console.log('⏰ [BriefingAgent] node-cron scheduled for 9:00 AM IST daily.');
+  console.log('⏰ [BriefingAgent] node-cron scheduled for 7:00 PM IST daily.');
 };
 
 module.exports = {

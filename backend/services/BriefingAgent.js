@@ -356,9 +356,17 @@ ${waStatusEmoji} ${jsonData.report_metadata.hero_headline}
 };
 
 const initCron = () => {
-  // node-cron has been disabled because it is unreliable on Render's free tier (server sleep).
-  // The briefing is now exclusively triggered by an external cron-job.org POST request to /api/ai/trigger-briefing.
-  console.log('⏰ [BriefingAgent] Waiting for external trigger via /api/ai/trigger-briefing...');
+  // Run every day at 09:00 AM IST
+  // '0 9 * * *' = 9:00 AM
+  cron.schedule('0 9 * * *', async () => {
+    console.log('⏰ [Cron] Triggering Daily 9 AM Executive Briefing...');
+    await generateAndSendBriefing();
+  }, {
+    scheduled: true,
+    timezone: "Asia/Kolkata"
+  });
+  
+  console.log('⏰ [BriefingAgent] node-cron scheduled for 9:00 AM IST daily.');
 };
 
 module.exports = {

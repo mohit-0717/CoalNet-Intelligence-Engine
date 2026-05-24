@@ -138,10 +138,16 @@ const CoalMinesMap = () => {
             <div className="absolute inset-0 bg-primary/5 rounded-full blur-[100px] animate-pulse" />
 
             <TooltipProvider>
-              <TransformWrapper initialScale={1} minScale={1} maxScale={50} wheel={{ step: 0.2 }}>
-                {({ zoomIn, zoomOut, resetTransform, state }) => {
-                  const currentScale = state?.scale || 1;
-                  const invScale = 1 / currentScale;
+              <TransformWrapper 
+                initialScale={1} 
+                minScale={1} 
+                maxScale={50} 
+                wheel={{ step: 0.2 }}
+                onTransformed={(ref) => {
+                  document.documentElement.style.setProperty('--map-zoom', ref.state.scale.toString());
+                }}
+              >
+                {({ zoomIn, zoomOut, resetTransform }) => {
                   
                   return (
                   <div className="relative w-full h-full flex items-center justify-center">
@@ -166,29 +172,35 @@ const CoalMinesMap = () => {
                       {coalMines.map((mine) => (
                         <Tooltip key={mine.id}>
                           <TooltipTrigger asChild>
-                            <motion.div
-                              className="absolute w-3 h-3 cursor-pointer z-20 group"
-                              style={{ left: `${mine.x}%`, top: `${mine.y}%` }}
-                              initial={{ x: "-50%", y: "-50%", scale: invScale }}
-                              animate={{ scale: invScale }}
-                              whileHover={{ scale: 1.5 * invScale, x: "-50%", y: "-50%" }}
-                              transition={{ duration: 0.1 }}
-                              onMouseEnter={() => setHoveredMine(mine)}
-                              onMouseLeave={() => setHoveredMine(null)}
+                            <div 
+                              className="absolute w-3 h-3 z-20"
+                              style={{ 
+                                left: `${mine.x}%`, 
+                                top: `${mine.y}%`,
+                                transform: "translate(-50%, -50%) scale(calc(1 / var(--map-zoom, 1)))" 
+                              }}
                             >
-                              {/* Static central dot */}
-                              <div className={`w-1.5 h-1.5 rounded-full mx-auto mt-0.5 ${
-                                mine.status === "critical" ? "bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.8)]" :
-                                mine.status === "warning" ? "bg-orange-500 shadow-[0_0_8px_rgba(249,115,22,0.8)]" :
-                                "bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.8)]"
-                              }`} />
-                              {/* Pulsing ring */}
-                              <div className={`absolute inset-0 rounded-full animate-ping opacity-60 ${
-                                mine.status === "critical" ? "bg-red-500" :
-                                mine.status === "warning" ? "bg-orange-500" :
-                                "bg-emerald-500"
-                              }`} />
-                            </motion.div>
+                              <motion.div
+                                className="w-full h-full cursor-pointer group"
+                                initial={{ scale: 1 }}
+                                whileHover={{ scale: 1.5 }}
+                                onMouseEnter={() => setHoveredMine(mine)}
+                                onMouseLeave={() => setHoveredMine(null)}
+                              >
+                                {/* Static central dot */}
+                                <div className={`w-1.5 h-1.5 rounded-full mx-auto mt-0.5 ${
+                                  mine.status === "critical" ? "bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.8)]" :
+                                  mine.status === "warning" ? "bg-orange-500 shadow-[0_0_8px_rgba(249,115,22,0.8)]" :
+                                  "bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.8)]"
+                                }`} />
+                                {/* Pulsing ring */}
+                                <div className={`absolute inset-0 rounded-full animate-ping opacity-60 ${
+                                  mine.status === "critical" ? "bg-red-500" :
+                                  mine.status === "warning" ? "bg-orange-500" :
+                                  "bg-emerald-500"
+                                }`} />
+                              </motion.div>
+                            </div>
                           </TooltipTrigger>
                           <TooltipContent className="glass-effect border-white/20">
                             <p className="font-bold text-xs">{mine.name}</p>

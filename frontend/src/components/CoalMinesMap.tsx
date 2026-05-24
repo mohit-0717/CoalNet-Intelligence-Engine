@@ -133,7 +133,7 @@ const CoalMinesMap = () => {
           </motion.div>
 
           {/* Map Container */}
-          <div className="relative aspect-[4/5] md:aspect-square flex items-center justify-center scale-110">
+          <div className="relative aspect-[4/5] md:aspect-square flex items-center justify-center scale-125">
             {/* Pulsing Base Map Glow */}
             <div className="absolute inset-0 bg-primary/5 rounded-full blur-[100px] animate-pulse" />
 
@@ -158,7 +158,7 @@ const CoalMinesMap = () => {
                       <button onClick={() => resetTransform()} className="w-6 h-6 flex items-center justify-center bg-white/10 rounded hover:bg-white/20 transition-colors text-primary text-xs">↺</button>
                     </div>
                     
-                    <TransformComponent wrapperClass="w-full h-full !flex items-center justify-center" contentClass="w-full max-w-md relative">
+                    <TransformComponent wrapperClass="w-full h-full !flex items-center justify-center" contentClass="w-full max-w-[85%] relative">
                       {/* Simplified SVG Map of India (Outline) */}
                       <svg
                         viewBox="0 0 100 100"

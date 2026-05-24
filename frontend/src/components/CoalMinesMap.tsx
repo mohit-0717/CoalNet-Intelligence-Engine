@@ -1,9 +1,7 @@
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { MapPin, Info } from "lucide-react";
 import { useState } from "react";
-import {
-  TooltipProvider,
-} from "@/components/ui/tooltip";
+import { TooltipProvider } from "@/components/ui/tooltip";
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 
 const coalMines = [
@@ -205,30 +203,6 @@ const CoalMinesMap = () => {
                 }}
               </TransformWrapper>
             </TooltipProvider>
-
-            {/* Hovered Mine Info Card */}
-            <AnimatePresence>
-              {hoveredMine && (
-                <motion.div 
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: 10 }}
-                  className="absolute bottom-4 left-1/2 -translate-x-1/2 z-[100] glass-effect border border-white/20 p-3 rounded-xl min-w-[200px] shadow-2xl pointer-events-none"
-                >
-                  <div className="flex items-center gap-3">
-                    <div className={`w-3 h-3 rounded-full ${
-                      hoveredMine.status === "critical" ? "bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.8)]" :
-                      hoveredMine.status === "warning" ? "bg-orange-500 shadow-[0_0_8px_rgba(249,115,22,0.8)]" :
-                      "bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.8)]"
-                    }`} />
-                    <div>
-                      <p className="font-bold text-sm text-white">{hoveredMine.name}</p>
-                      <p className="text-xs text-white/70">{hoveredMine.state}</p>
-                    </div>
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
 
             {/* Floating Labels */}
             <div className="absolute top-10 right-0 glass-effect p-2 rounded-lg text-[10px] font-bold border border-white/10 uppercase tracking-widest text-emerald-400">

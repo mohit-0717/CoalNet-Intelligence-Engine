@@ -148,11 +148,12 @@ const CoalMinesMap = () => {
                   <Tooltip key={mine.id}>
                     <TooltipTrigger asChild>
                       <motion.div
-                        className="absolute w-3 h-3 -translate-x-1/2 -translate-y-1/2 cursor-pointer z-20 group"
+                        className="absolute w-3 h-3 cursor-pointer z-20 group"
                         style={{ left: `${mine.x}%`, top: `${mine.y}%` }}
+                        initial={{ x: "-50%", y: "-50%" }}
+                        whileHover={{ scale: 1.5, x: "-50%", y: "-50%" }}
                         onMouseEnter={() => setHoveredMine(mine)}
                         onMouseLeave={() => setHoveredMine(null)}
-                        whileHover={{ scale: 1.5 }}
                       >
                         {/* Static central dot */}
                         <div className={`w-1.5 h-1.5 rounded-full mx-auto mt-0.5 ${

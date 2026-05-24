@@ -56,9 +56,9 @@ router.get('/briefings', async (req, res) => {
 // POST /api/ai/trigger-briefing
 router.post('/trigger-briefing', async (req, res) => {
   try {
-    // Run asynchronously
-    BriefingAgent.generateAndSendBriefing();
-    res.json({ success: true, message: 'Briefing generation triggered.' });
+    // Run synchronously so frontend can wait for completion
+    await BriefingAgent.generateAndSendBriefing();
+    res.json({ success: true, message: 'Briefing generation completed.' });
   } catch (error) {
     console.error('Trigger Briefing Error:', error.message);
     res.status(500).json({ success: false, error: 'Failed to trigger briefing' });

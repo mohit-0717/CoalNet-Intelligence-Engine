@@ -1,11 +1,8 @@
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { MapPin, Info } from "lucide-react";
 import { useState } from "react";
 import {
-  Tooltip,
-  TooltipContent,
   TooltipProvider,
-  TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 
@@ -144,7 +141,7 @@ const CoalMinesMap = () => {
                 centerOnInit={true}  
                 maxScale={50} 
                 wheel={{ step: 0.2 }}
-                onTransformed={(ref) => {
+                onTransform={(ref: any) => {
                   document.documentElement.style.setProperty('--map-zoom', ref.state.scale.toString());
                 }}
               >

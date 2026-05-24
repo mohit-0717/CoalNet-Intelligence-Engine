@@ -171,43 +171,36 @@ const CoalMinesMap = () => {
 
                       {/* Pulsing dots for each mine */}
                       {coalMines.map((mine) => (
-                        <Tooltip key={mine.id}>
-                          <TooltipTrigger asChild>
-                            <div 
-                              className="absolute w-3 h-3 z-20"
-                              style={{ 
-                                left: `${mine.x}%`, 
-                                top: `${mine.y}%`,
-                                transform: "translate(-50%, -50%) scale(calc(1 / var(--map-zoom, 1.5)))" 
-                              }}
-                            >
-                              <motion.div
-                                className="w-full h-full cursor-pointer group"
-                                initial={{ scale: 1 }}
-                                whileHover={{ scale: 1.5 }}
-                                onMouseEnter={() => setHoveredMine(mine)}
-                                onMouseLeave={() => setHoveredMine(null)}
-                              >
-                                {/* Static central dot */}
-                                <div className={`w-1.5 h-1.5 rounded-full mx-auto mt-0.5 ${
-                                  mine.status === "critical" ? "bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.8)]" :
-                                  mine.status === "warning" ? "bg-orange-500 shadow-[0_0_8px_rgba(249,115,22,0.8)]" :
-                                  "bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.8)]"
-                                }`} />
-                                {/* Pulsing ring */}
-                                <div className={`absolute inset-0 rounded-full animate-ping opacity-60 ${
-                                  mine.status === "critical" ? "bg-red-500" :
-                                  mine.status === "warning" ? "bg-orange-500" :
-                                  "bg-emerald-500"
-                                }`} />
-                              </motion.div>
-                            </div>
-                          </TooltipTrigger>
-                          <TooltipContent className="glass-effect border-white/20">
-                            <p className="font-bold text-xs">{mine.name}</p>
-                            <p className="text-[10px] opacity-70">{mine.state}</p>
-                          </TooltipContent>
-                        </Tooltip>
+                        <div 
+                          key={mine.id}
+                          className="absolute w-3 h-3 z-20"
+                          style={{ 
+                            left: `${mine.x}%`, 
+                            top: `${mine.y}%`,
+                            transform: "translate(-50%, -50%) scale(calc(1 / var(--map-zoom, 1.5)))" 
+                          }}
+                        >
+                          <motion.div
+                            className="w-full h-full cursor-pointer group"
+                            initial={{ scale: 1 }}
+                            whileHover={{ scale: 1.5 }}
+                            onMouseEnter={() => setHoveredMine(mine)}
+                            onMouseLeave={() => setHoveredMine(null)}
+                          >
+                            {/* Static central dot */}
+                            <div className={`w-1.5 h-1.5 rounded-full mx-auto mt-0.5 ${
+                              mine.status === "critical" ? "bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.8)]" :
+                              mine.status === "warning" ? "bg-orange-500 shadow-[0_0_8px_rgba(249,115,22,0.8)]" :
+                              "bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.8)]"
+                            }`} />
+                            {/* Pulsing ring */}
+                            <div className={`absolute inset-0 rounded-full animate-ping opacity-60 ${
+                              mine.status === "critical" ? "bg-red-500" :
+                              mine.status === "warning" ? "bg-orange-500" :
+                              "bg-emerald-500"
+                            }`} />
+                          </motion.div>
+                        </div>
                       ))}
                     </TransformComponent>
                   </div>
@@ -215,6 +208,30 @@ const CoalMinesMap = () => {
                 }}
               </TransformWrapper>
             </TooltipProvider>
+
+            {/* Hovered Mine Info Card */}
+            <AnimatePresence>
+              {hoveredMine && (
+                <motion.div 
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: 10 }}
+                  className="absolute bottom-4 left-1/2 -translate-x-1/2 z-[100] glass-effect border border-white/20 p-3 rounded-xl min-w-[200px] shadow-2xl pointer-events-none"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className={`w-3 h-3 rounded-full ${
+                      hoveredMine.status === "critical" ? "bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.8)]" :
+                      hoveredMine.status === "warning" ? "bg-orange-500 shadow-[0_0_8px_rgba(249,115,22,0.8)]" :
+                      "bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.8)]"
+                    }`} />
+                    <div>
+                      <p className="font-bold text-sm text-white">{hoveredMine.name}</p>
+                      <p className="text-xs text-white/70">{hoveredMine.state}</p>
+                    </div>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
 
             {/* Floating Labels */}
             <div className="absolute top-10 right-0 glass-effect p-2 rounded-lg text-[10px] font-bold border border-white/10 uppercase tracking-widest text-emerald-400">

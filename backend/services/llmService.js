@@ -44,15 +44,15 @@ const callLLM = async ({ provider, prompt, systemPrompt, messages, maxTokens = 1
 
   if (provider === 'cerebras') {
     primaryClient = cerebras;
-    primaryModel = 'gpt-oss-120b'; // Cerebras
+    primaryModel = 'qwen-3.8-27b'; // Cerebras
     secondaryClient = groq;
-    secondaryModel = 'groq/compound'; // Groq fallback
+    secondaryModel = 'qwen/qwen3.8-27b'; // Groq fallback
   } else {
     // If provider is grok/groq
     primaryClient = groq;
-    primaryModel = 'groq/compound'; // Groq
+    primaryModel = 'qwen/qwen3.8-27b'; // Groq
     secondaryClient = cerebras;
-    secondaryModel = 'gpt-oss-120b'; // Cerebras fallback
+    secondaryModel = 'qwen-3.8-27b'; // Cerebras fallback
   }
 
   const apiMessages = messages || [

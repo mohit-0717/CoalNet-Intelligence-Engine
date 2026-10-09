@@ -104,7 +104,7 @@ router.post('/:mineId', async (req, res) => {
     } catch (mlErr) {
       const status = mlErr.response?.status;
       const code = mlErr.code;
-      const shouldFallback = status >= 500 || [
+      const shouldFallback = status >= 500 || status === 429 || [
         'ECONNREFUSED',
         'ECONNABORTED',
         'ECONNRESET',
